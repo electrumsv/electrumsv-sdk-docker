@@ -1,59 +1,131 @@
-version: '3.5'
+version: "3.8"
 
 services:
 
-  db:
+  postgres:
     image: postgres
-    container_name: db
-    network_mode: service:electrumsv-sdk
-    volumes:
-      - ./create_mapi_user.sh:/docker-entrypoint-initdb.d/create_mapi_user.sh
+    container_name: postgres
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=mapimaster
       - POSTGRES_PASSWORD=mapimasterpass
 
-  electrumsv-sdk:
-#     image: monkishrex/electrumsv-sdk
+  node:
+    # Note. The blockchains/blockchain_115_3677f4 regtest blockchain is loaded on startup and
+    # one additional block is mined to take the node out of initial block download mode. Otherwise
+    # it will not respond to p2p protocol requests for getblocks etc. nor will it publish
+    # notifications to ZMQ subscribers.
+    # See: ./node/server.py for the initial startup script
+    container_name: node
     build:
       context: .
-      dockerfile: ./Dockerfile
-    container_name: electrumsv-sdk
-    environment:
-      # MAPI postgres connection settings
-      - PGHOST=db
-      - PGPORT=5432
-      # Node Settings - will not be required soon as these will be set by default
-      - NODE_RPCALLOWIP=0.0.0.0/0
-      - NODE_RPCBIND=0.0.0.0
-      - NODE_PORT=18332
-      # ElectrumSV Settings
-      - RESTAPI_HOST=0.0.0.0
-      - RESTAPI_PORT=9999
-      - BITCOIN_NODE_PORT=18332
-      - BITCOIN_NODE_RPCUSER=rpcuser
-      - BITCOIN_NODE_RPCPASSWORD=rpcpassword
-      - ELECTRUMX_CONNECTION_STRING=${DOCKER_GATEWAY_HOST:-host.docker.internal}:51001:t
-    volumes:
-      - ./logs:/root/.electrumsv-sdk/logs
+      dockerfile: ./node/Dockerfile
     ports:
-      - "3002:3002"       # WOC
-      - "18332:18332"     # Node
-      - "5050:5050"       # MAPI
-      - "51001:51001"     # ElectrumX
-      - "9999:9999"       # ElectrumSV
-      - "49241:49241"     # SimpleIndexer
-      - "56565:56565"     # StatusMonitor
-    stdin_open: true
-    tty: true
-    command: >
-      /bin/bash -c "electrumsv-sdk start --background node
-      && electrumsv-sdk start --background status_monitor
-      && electrumsv-sdk install merchant_api
-      && electrumsv-sdk start --background merchant_api
-      && electrumsv-sdk start --background electrumx
-      && electrumsv-sdk start --background electrumsv
-      && electrumsv-sdk node generate 10
-      && electrumsv-sdk start --background whatsonchain
-      && electrumsv-sdk start --background simple_indexer
-      && /bin/bash"
+      - "18332:18332"
+      - "18444:18444"
+
+  whatsonchain:
+    container_name: whatsonchain
+    build:
+      context: .
+      dockerfile: ./whatsonchain/Dockerfile
+    ports:
+      - "55555:3002"
+    environment:
+      ELECTRUMX_HOST: "host.docker.internal"
+      ELECTRUMX_PORT: 51001
+      RPC_HOST: "host.docker.internal"
+      RPC_PORT: 18332
+      RPC_USERNAME: rpcuser
+      RPC_PASSWORD: rpcpassword
+
+  electrumx:
+    container_name: electrumx
+    build:
+      context: .
+      dockerfile: ./electrumx/Dockerfile
+    ports:
+      - "51001:51001"
+    environment:
+      DAEMON_URL: "http://rpcuser:rpcpassword@host.docker.internal:18332"
+      ELECTRUMX_PORT: 51001
+      PYTHONUNBUFFERED: 1
+      SERVICES: tcp://:51001
+      DB_DIRECTORY: /opt/data
+      DB_ENGINE: leveldb
+      COIN: BitcoinSV
+      COST_SOFT_LIMIT": 0
+      COST_HARD_LIMIT": 0
+      MAX_SEND: 10000000
+      LOG_LEVEL: debug
+      NET: regtest
+      ALLOW_ROOT: 1
+
+  electrumsv:
+    container_name: electrumsv
+    depends_on:
+      - "simple_indexer"
+      - "reference_server"
+    build:
+      context: .
+      dockerfile: ./electrumsv/Dockerfile
+    ports:
+      - "9999:9999"
+      - "8332:8332"  # node-api server (to replace bitcoind JSON-RPC)
+    environment:
+      NODEAPI_HOST: "0.0.0.0"
+      NODEAPI_PORT: 8332
+      BITCOIN_NODE_HOST: host.docker.internal
+      BITCOIN_NODE_PORT: 18332
+      BITCOIN_NODE_RPCUSER: rpcuser
+      BITCOIN_NODE_RPCPASSWORD: rpcpassword
+      RESTAPI_HOST: "0.0.0.0"
+
+  reference_server:
+    container_name: reference_server
+    build:
+      context: .
+      dockerfile: ./reference_server/Dockerfile
+    ports:
+      - "47124:47124"
+      - "47126:47126"
+    environment:
+      SKIP_DOTENV_FILE: 1  # Allows us to overrride all of the defaults in the .env file
+      EXTERNAL_HOST: "0.0.0.0"
+      EXTERNAL_PORT: 47124
+      INTERNAL_HOST: "0.0.0.0"
+      INTERNAL_PORT: 47126
+      EXPOSE_HEADER_SV_APIS: 1
+      HEADER_SV_URL: 'http://host.docker.internal:33444'
+      EXPOSE_PAYMAIL_APIS: 1
+      EXPOSE_INDEXER_APIS: 1
+      INDEXER_URL: 'http://host.docker.internal:49241'
+      NOTIFICATION_TEXT_NEW_MESSAGE: New message arrived
+      MAX_MESSAGE_CONTENT_LENGTH: 65536
+      CHUNKED_BUFFER_SIZE: 1024
+      NETWORK: regtest
+      ENABLE_OUTBOUND_DATA_DELIVERY: 1
+    command:
+      sh -c 'python3 /reference_server/server.py'
+
+  simple_indexer:
+    container_name: simple_indexer
+    build:
+      context: .
+      dockerfile: ./simple_indexer/Dockerfile
+    ports:
+      - "49241:49241"
+    environment:
+      SERVER_HOST: "0.0.0.0"
+      SERVER_PORT: 49241
+      REFERENCE_SERVER_HOST: "host.docker.internal"
+      REFERENCE_SERVER_PORT: 47124
+      REFERENCE_SERVER_SCHEME: http
+      BITCOIN_NODE_HOST: "host.docker.internal"
+      BITCOIN_NODE_PORT: 18332
+      BITCOIN_NODE_RPCUSER: rpcuser
+      BITCOIN_NODE_RPCPASSWORD: rpcpassword
+      SIMPLE_INDEX_RESET: 1
+    command:
+      sh -c 'python3 /simple_indexer/server.py'
+

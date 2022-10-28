@@ -19,27 +19,47 @@ BitcoinSV development environment using the Electrumsv-sdk and Docker
 
   ```docker-compose up -d```
 
-5. Attach to the electrumsv-sdk container to issue commands (see electrumsv-sdk detailed install instructions and github repo for more details)
 
-  ```docker container attach electrumsv-sdk```
+## Tear Down Instructions
+
+    docker-compose down
+
+## Build Instructions
+
+To build all containers in the docker-compose.yml file:
+
+    docker-compose build --parallel
+
+To build only selected components:
+
+    # The --no-cache flag is needed re-clone the repo and therefore include
+    # the latest commits
+
+    docker-compose build --no-cache electrumsv
 
 
-The whatsonchain instance is accessible at ```localhost:3002```
+The whatsonchain instance is accessible at ```localhost:55555```
 
 Ports for `http://` services (on localhost):
 
-    3002      # Whatsonchain
     18332     # Node
-    5050      # MAPI
-    51001     # ElectrumX
-    9999      # ElectrumSV
+    9999      # ElectrumSV REST API
+    8332      # ElectrumSV RPC-API (Replaces a subset of the bitcoind RPC API)
+    47124     # Reference Server (Includes a broad set of APIs for ElectrumSV)
     49241     # SimpleIndexer
-    56565     # StatusMonitor
+    51001     # ElectrumX
+    55555     # Whatsonchain
+    
+    (Not added yet but will be soon)
+    5050      # MAPI
+    8445      # DPP Proxy server
+    33444     # HeaderSV
 
-generate new blocks with ```electrumsv-sdk node generate [num of blocks, e.g. 10]```
+### Getinfo from the bitcoin node's commandline CLI interface
+    
+    docker-compose.exe exec node /bitcoin-cli.sh getinfo
 
-https://electrumsv-sdk.readthedocs.io/en/latest/getting-started/installing-the-SDK.html
+### Mine 1 block
 
-https://github.com/electrumsv/electrumsv-sdk
+    docker-compose.exe exec node /bitcoin-cli.sh generate 1
 
-https://github.com/bitcoin-sv/merchantapi-reference/blob/master/README.md
