@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./create_mapi_user.sh:/docker-entrypoint-initdb.d/create_mapi_user.sh
+      - ./regtest/create_mapi_user.sh:/docker-entrypoint-initdb.d/create_mapi_user.sh
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=mapimaster
@@ -24,7 +24,7 @@ services:
     # See: ./node/server.py for the initial startup script
     container_name: node
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./node/Dockerfile
     ports:
       - "18332:18332"
@@ -33,7 +33,7 @@ services:
   whatsonchain:
     container_name: whatsonchain
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./whatsonchain/Dockerfile
     ports:
       - "55555:3002"
@@ -48,7 +48,7 @@ services:
   electrumx:
     container_name: electrumx
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./electrumx/Dockerfile
     ports:
       - "51001:51001"
@@ -73,7 +73,7 @@ services:
       - "simple_indexer"
       - "reference_server"
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./electrumsv/Dockerfile
     ports:
       - "9999:9999"
@@ -90,7 +90,7 @@ services:
   reference_server:
     container_name: reference_server
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./reference_server/Dockerfile
     ports:
       - "47124:47124"
@@ -117,7 +117,7 @@ services:
   simple_indexer:
     container_name: simple_indexer
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./simple_indexer/Dockerfile
     ports:
       - "49241:49241"
@@ -138,7 +138,7 @@ services:
   dpp_proxy:
     container_name: dpp_proxy
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./dpp_proxy/Dockerfile
     ports:
       - "8445:8445"
@@ -156,7 +156,7 @@ services:
     depends_on:
       - "postgres"
     build:
-      context: .
+      context: ./regtest
       dockerfile: ./merchant_api/Dockerfile
     ports:
       - "5050:5050"

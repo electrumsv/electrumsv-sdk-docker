@@ -16,7 +16,7 @@ RUN mkdir -p /electrumsv/data/regtest/wallets
 RUN python3 electrum-sv create_wallet --wallet /electrumsv/data/regtest/wallets/worker1.sqlite \
 --walletpassword 'test' --portable --no-password-check --regtest --dir /electrumsv/data
 RUN python3 electrum-sv create_account --wallet /electrumsv/data/regtest/wallets/worker1.sqlite \
-\--walletpassword 'test' --portable --no-password-check --regtest --dir /electrumsv/data
+--walletpassword 'test' --portable --no-password-check --regtest --dir /electrumsv/data
 
 EXPOSE 9999
 CMD python3 electrum-sv --portable --dir /electrumsv/data --regtest daemon --v=debug \
