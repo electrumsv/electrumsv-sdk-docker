@@ -1,4 +1,4 @@
-# ElectrumSV Dockerfiles
+# LiteClient Dockerfiles
 This repo aims to serve two purposes:
 - A full set of regtest docker images that support the full functioning of the 
 ElectrumSV wallet
@@ -25,7 +25,7 @@ I've not made any effort to slim down these docker images to the most lightweigh
 versions as there are more pressing priorities. I only care that it builds and works.
 However, pull requests from docker wizards are most welcome.
 
-## Installation Instructions
+## Regtest Instructions - Running the full stack
 
 1. Make sure you have Docker installed: https://docs.docker.com/get-docker/
 
@@ -35,7 +35,7 @@ However, pull requests from docker wizards are most welcome.
 
 2. clone or download the repo
 
-  ```git clone https://github.com/electrumsv/electrumsv-sdk-docker.git```
+  ```git clone https://github.com/electrumsv/liteclient-docker.git```
 
 3. cd into the repo directory
 
@@ -85,16 +85,51 @@ Ports for `http://` services (on localhost):
 
     docker-compose.exe exec node /bitcoin-cli.sh generate 1
 
+
+### Loaded RegTest Blockchains
+We have prepared some regtest blockchains with hand-crafted transactions in them and
+for known wallet seed phrases (xprv keys). See `regtest/node/blockchains/README.md`
+for details.
+
+There are two main test wallets. The miner's wallet with ample funds:
+
+    entire coral usage young front fury okay fade hen process follow light
+
+The other wallet that has a handful of test transactions with different types of output scripts.
+(These transactions have also been targeted for reorging in the other test blockchains)
+
+    neutral cash ozone buyer cook match exhaust usual purse transfer evil believe
+
+The `node` container in the `docker-compose.regtest.yml` runs a python script on startup
+which loads `blockchain_115_3677f4` (which takes the node to height 115). It then 
+immediately mines 1 more "fresh" block with a current timestamp. It does this to get
+the node out of "initial block download" mode (which is determined by the block timestamp
+of the chain tip being within 24 hours of current time). 
+
+If this is not done, services that communicate over the p2p network or rely on zmq PUB/SUB notifications will hear
+radio silence.
+
+#### Testing Reorg Handling
+There is a script for submitting other test blockchains to the node in 
+`regtest/node/blockchains/import_blocks.py`.
+
+To trigger a reorg, we need to submit blocks that 1) orphan 1 or more blocks of the
+current longest chain 2) extend the longest chain to a height higher than
+the current height of 116.
+    
+    cd regtest/node/blockchains 
+    python3 import_blocks.py blockchains/blockchain_118_0ebc17
+
+Will trigger a reorg with a common parent at block height 110. 
+This is done to verify that ElectrumSV and the supporting infrastructure is 
+correctly handling these events.
+
 ## Mainnet Instructions For ElectrumSV
 
 ### Build the Docker Image
 
-    docker-compose -f docker-compose.mainnet.yml build --no-cache electrumsv
-
-OR
-
     docker-compose -f docker-compose.mainnet.yml build --no-cache
-    
+
 
 ### Adding a wallet & account
 When running ElectrumSV without a GUI, wallets must be created via the commandline.
