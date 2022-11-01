@@ -45,6 +45,7 @@ services:
       RPC_USERNAME: rpcuser
       RPC_PASSWORD: rpcpassword
 
+  # ElectrumX is only used by Whatsonchain in this stack - ElectrumSV has removed it as a dependency in v1.4.x
   electrumx:
     container_name: electrumx
     build:
@@ -89,6 +90,9 @@ services:
 
   reference_server:
     container_name: reference_server
+    depends_on:
+      - "header_sv"
+      - "simple_indexer"
     build:
       context: ./regtest
       dockerfile: ./reference_server/Dockerfile
@@ -150,6 +154,27 @@ services:
       LOG_LEVEL: debug
     command:
       sh -c '/opt/build/release/server'
+
+  header_sv:
+    container_name: header_sv
+    build:
+      context: ./regtest
+      dockerfile: ./header_sv/Dockerfile
+    ports:
+      - "33444:33444"
+    environment:
+      SPRING_PROFILES_ACTIVE: bsv-regtest
+      SERVER_PORT: 33444
+      SERVER_ADDRESS: 0.0.0.0
+      HEADERSV_NETWORK_MINPEERS: 1
+      HEADERSV_NETWORK_MAXPEERS: 1
+      HEADERSV_NETWORK_PEERS: host.docker.internal
+      HEADERSV_NETWORK_PORT: 18444
+      HEADERSV_NETWORK_DISCOVERYENABLED: 'true'
+      HEADERSV_NETWORK_INITIALCONNECTIONS: host.docker.internal:18444
+
+    command:
+      sh -c '/app/app-boot-2.0.2/bin/app'
 
   merchant_api:
     container_name: merchant_api

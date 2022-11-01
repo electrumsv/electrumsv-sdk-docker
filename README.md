@@ -20,6 +20,11 @@ when running electrumsv inside of Docker.
 If you are helping us test this on mainnet, the instuctions for adding a wallet
 and account via the commandline are at the bottom of this `README`.
 
+### Disclaimer
+I've not made any effort to slim down these docker images to the most lightweight
+versions as there are more pressing priorities. I only care that it builds and works.
+However, pull requests from docker wizards are most welcome.
+
 ## Installation Instructions
 
 1. Make sure you have Docker installed: https://docs.docker.com/get-docker/
@@ -70,8 +75,6 @@ Ports for `http://` services (on localhost):
     55555     # Whatsonchain
     5050      # MAPI
     8445      # DPP Proxy server
-
-    (Not added yet but will be soon)
     33444     # HeaderSV
 
 ### Getinfo from the bitcoin node's commandline CLI interface

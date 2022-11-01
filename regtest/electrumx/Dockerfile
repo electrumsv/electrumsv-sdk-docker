@@ -9,5 +9,3 @@ RUN mkdir -p /opt/data
 
 EXPOSE 51001
 CMD python3 electrumx_server
-
-
