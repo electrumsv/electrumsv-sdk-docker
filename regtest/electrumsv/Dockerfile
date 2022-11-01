@@ -7,11 +7,14 @@ RUN apt-get -y install zbar-tools
 RUN git clone --branch develop --depth=1 https://github.com/electrumsv/electrumsv /electrumsv
 WORKDIR /electrumsv
 RUN git checkout develop
+
 RUN python3 -m pip install pip==22.2.2 --disable-pip-version-check
 RUN python3 -m pip install -r contrib/deterministic-build/linux-py3.10-requirements.txt --disable-pip-version-check
 RUN python3 -m pip install -r contrib/deterministic-build/linux-py3.10-requirements-hw.txt --disable-pip-version-check
 
 RUN mkdir -p /electrumsv/data/regtest/wallets
+
+COPY ./electrumsv/api_servers_regtest.json /electrumsv/electrumsv/data/
 
 RUN python3 electrum-sv create_wallet --wallet /electrumsv/data/regtest/wallets/worker1.sqlite \
 --walletpassword 'test' --portable --no-password-check --regtest --dir /electrumsv/data
