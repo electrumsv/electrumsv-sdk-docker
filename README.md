@@ -11,7 +11,7 @@ to run one of these other services in the meantime, you can checkout the relevan
 repository and follow the recommended instructions there.
 
 ## DO NOT USE ON MAINNET YET
-The version of ElectrumSV that is indended to be run is currently on
+The version of ElectrumSV that is intended to be run is currently on
 the `develop` branch and is not yet ready for public consumption.
 
 There is also work to be done regarding secure handling of credentials
@@ -128,7 +128,8 @@ correctly handling these events.
 
 ### Build the Docker Image
 
-    docker-compose -f docker-compose.mainnet.yml build --no-cache
+    docker-compose build --no-cache
+    docker-compose up -d
 
 
 ### Adding a wallet & account
@@ -138,16 +139,5 @@ Enter the `electrumsv` docker container in an interactive bash terminal:
 
     docker exec -it electrumsv bash
 
-Create a wallet called `mywallet` with a password of `'test'`:
-
-    python3 electrum-sv create_wallet --wallet /electrumsv/data/wallets/mywallet.sqlite --walletpassword 'test' --portable --no-password-check --dir /electrumsv/data
-
-Create a standard account with a generated random wallet seed:
-
-    python3 electrum-sv create_account --wallet /electrumsv/data/wallets/mywallet.sqlite --walletpassword 'test' --portable --no-password-check --dir /electrumsv/data
-
-Load wallet via an http POST request to the REST API. For example:
-
-    curl -X POST http://127.0.0.1:9999/v1/mainnet/wallet/load --header "Content-Type: application/json" --data '{"file_name": "mywallet.sqlite", "password": "test"}'
-
-These instructions may be subject to change as more features on this front are fleshed out
+Follow the instructions in found here: `https://electrumsv.readthedocs.io/en/develop/building-on-electrumsv/node-wallet-api.html#setup` 
+in the terminal

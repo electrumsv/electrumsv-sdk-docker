@@ -15,6 +15,6 @@ services:
       NODEAPI_PORT: 8332
       RESTAPI_HOST: "0.0.0.0"
     volumes:
-      - ./data:/root/.electrum-sv
+      - ./electrumsv_data:/root/.electrum-sv
     command:      
       sh -c 'python3 electrum-sv daemon -v=debug --enable-node-wallet-api -rpcpassword= -walletnotify="python3 contrib/scripts/jsonrpc_wallet_event.py %s"'
