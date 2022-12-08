@@ -14,6 +14,9 @@ RUN python3 -m pip install -r contrib/deterministic-build/linux-py3.10-requireme
 RUN python3 -m pip uninstall bitcoinx -y
 RUN python3 -m pip install git+https://github.com/kyuupichan/bitcoinX.git@61634bebe4d877111c1be8c583ec28d00845ba75
 
+# TODO replace everything above with the image created by the Dockerfile in the root of the repo.
+# FROM deggen88/esvd:demo -- this will be updated to match the Docker Hub automated image build.
+
 RUN mkdir -p /electrumsv/data/regtest/wallets
 
 COPY ./electrumsv/api_servers_regtest.json /electrumsv/electrumsv/data/
