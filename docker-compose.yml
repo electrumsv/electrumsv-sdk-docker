@@ -4,7 +4,7 @@ services:
 
   electrumsv:
     container_name: electrumsv
-    image: deggen88/esvd:demo # TODO - update to match the Docker Hub automated image build.
+    image: electrumsv/payd:develop
     ports:
       - "9999:9999"
       - "8332:8332"  # node-api server (to replace bitcoind JSON-RPC)
