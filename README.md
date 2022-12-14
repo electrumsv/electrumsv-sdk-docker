@@ -24,7 +24,7 @@ When prompted, set a password. Repeat to create a wallet, then to load it, and f
   
 ## Usage  
 
-Unlock the wallet for json-rpc use
+Unlock the wallet for json-rpc use, note the password used here is "pass" - you should replace this with whatever your chosen password was from the setup stage.
 
 ```bash
 curl --request POST \
