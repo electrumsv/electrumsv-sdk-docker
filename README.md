@@ -1,4 +1,5 @@
 # LiteClient Docker Compose
+This is an example of how you might run a [LiteClient](https://docs.bitcoinsv.io) implementation as a Docker Container. The instructions below assume you have [docker compose](https://docs.docker.com/compose/install/) installed and the Docker daemon is running.
 
 ## Setup
 ```bash
