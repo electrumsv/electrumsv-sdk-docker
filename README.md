@@ -20,8 +20,6 @@ Copy and paste the below command into that terminal in order to setup a new wall
 ```
 When prompted, set a password. Repeat to create a wallet, then to load it, and finally to signup with listening service.  
   
----
-  
 ## Usage  
 
 Unlock the wallet for json-rpc use, note the password used here is "pass" - you should replace this with whatever your chosen password was from the setup stage.
@@ -42,12 +40,12 @@ curl --request POST \
   --header 'Content-Type: text/plain' \
   --data '{"method": "getnewaddress","params":[""],"id": "receive"}'
 ```
-Send a few sats to the response address using another wallet. [Handcash](https://handcash.io) for example.
+Send a few thousand sats to the response address using another wallet. [Handcash](https://handcash.io) for example.
 
 You should see a txid appear in the logs as confirmation of receipt.
 
 ### Sending  
-Send to address (the demo data will send 1000sats to deggen, please update to send elsewhere)
+Send to address. The data below will send 1000 sats to deggen, please update the address and value to send elsewhere.
 
 ```bash
 curl --request POST \
