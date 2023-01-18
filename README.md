@@ -5,10 +5,7 @@ This is an example of how you might run a [LiteClient](https://docs.bitcoinsv.io
 ```bash
 git clone https://github.com/electrumsv/liteclient-docker.git
 cd liteclient-docker
-docker-compose up
-```
-Then run this script on the container to create a new wallet and load it ready to use via json-rpc.
-```bash
+docker-compose up -d
 docker exec electrumsv /bin/bash root/.electrum-sv/create-load-demo-wallet.sh
 ```
 
