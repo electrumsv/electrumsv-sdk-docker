@@ -11,7 +11,6 @@ Then run this script on the container to create a new wallet and load it ready t
 ```bash
 docker exec electrumsv /bin/bash root/.electrum-sv/create-load-demo-wallet.sh
 ```
-Copy and paste the below command into that terminal in order to setup a new wallet within the container.
 
 ## Usage  
 
