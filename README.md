@@ -1,5 +1,5 @@
-# LiteClient Docker Compose
-This is an example of how you might run a [LiteClient](https://docs.bitcoinsv.io) implementation as a Docker Container. The instructions below assume you have [docker compose](https://docs.docker.com/compose/install/) installed and the Docker daemon is running.
+# PayD Docker Compose
+This is an example of how you could run [PayD](https://github.com/electrumsv/electrumsv) and interact with it using the same json-rpc interface which is used in the BitcoinSV node software. The instructions below assume you have [docker compose](https://docs.docker.com/compose/install/) installed and the Docker daemon is running.
 
 ## Setup
 ```bash
@@ -9,7 +9,7 @@ docker-compose up -d
 docker exec electrumsv /bin/bash root/.electrum-sv/create-load-demo-wallet.sh
 ```
 
-## Usage  
+## Usage
 
 Unlock the wallet for json-rpc use, note the password used here is "pass" - you should replace this with whatever your chosen password was from the setup stage.
 
@@ -33,7 +33,7 @@ Send a few thousand sats to the response address using another wallet. [Handcash
 
 You should see a txid appear in the logs as confirmation of receipt.
 
-### Sending  
+### Sending
 Send to address. The data below will send 1000 sats to deggen, please update the address and value to send elsewhere.
 
 ```bash
