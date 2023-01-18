@@ -7,20 +7,12 @@ git clone https://github.com/electrumsv/liteclient-docker.git
 cd liteclient-docker
 docker-compose up
 ```
-Then start a new terminal on the container
-
+Then run this script on the container to create a new wallet and load it ready to use via json-rpc.
 ```bash
-docker exec -it electrumsv /bin/bash
+docker exec electrumsv /bin/bash root/.electrum-sv/create-load-demo-wallet.sh
 ```
 Copy and paste the below command into that terminal in order to setup a new wallet within the container.
 
-```bash
-./electrum-sv create_jsonrpc_wallet -w demo
-./electrum-sv daemon load_wallet -w demo
-./electrum-sv daemon service_signup -w demo
-```
-When prompted, set a password. Repeat to create a wallet, then to load it, and finally to signup with listening service.  
-  
 ## Usage  
 
 Unlock the wallet for json-rpc use, note the password used here is "pass" - you should replace this with whatever your chosen password was from the setup stage.
