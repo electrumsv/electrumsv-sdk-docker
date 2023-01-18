@@ -9,9 +9,9 @@ services:
       - "9999:9999"
       - "8332:8332"  # node-api server (to replace bitcoind JSON-RPC)
     environment:
-      NODEAPI_HOST: "0.0.0.0"
+      NODEAPI_HOST: 0.0.0.0
       NODEAPI_PORT: 8332
-      RESTAPI_HOST: "0.0.0.0"
+      RESTAPI_HOST: 0.0.0.0
+      WALLET_PASSWORD: "pass"
     volumes:
-      - ./electrumsv_data:/root/.electrum-sv
-    command: 'python3 electrum-sv daemon -v=debug --enable-node-wallet-api -rpcpassword= -walletnotify="python3 contrib/scripts/jsonrpc_wallet_event.py %s"'
+      - ./electrumsv-data:/root/.electrum-sv

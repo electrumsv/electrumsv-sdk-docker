@@ -1,3 +1,4 @@
 *.idea*
 /logs
-/electrumsv_data
+/electrumsv-data/*
+!/electrumsv-data/create-load-demo-wallet.sh
