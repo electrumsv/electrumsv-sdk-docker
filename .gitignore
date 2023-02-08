@@ -2,3 +2,4 @@
 /logs
 /electrumsv-data/*
 !/electrumsv-data/create-load-demo-wallet.sh
+!/electrumsv-data/create_load_register_wallet.sh
