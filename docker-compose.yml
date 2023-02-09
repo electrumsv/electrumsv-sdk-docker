@@ -14,4 +14,4 @@ services:
       RESTAPI_HOST: 0.0.0.0
       WALLET_PASSWORD: "pass"
     volumes:
-      - ./electrumsv-data:/root/.electrum-sv
+      - ./payd-data:/root/.electrum-sv
