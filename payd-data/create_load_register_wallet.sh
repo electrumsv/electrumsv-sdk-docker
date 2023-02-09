@@ -19,4 +19,4 @@ done
 echo "service signup..."
 # now we may continue
 ./electrum-sv daemon -v=debug service_signup -w demo --walletpassword=pass > "/root/.electrum-sv/signup_log_$(date +%s).txt" 2>&1 &
-echo "wallet is read to use"
+echo "wallet is ready to use"
