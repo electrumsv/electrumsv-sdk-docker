@@ -1,6 +1,5 @@
 *.idea*
 /logs
 /payd-data/*
-!/payd-data/create-load-demo-wallet.sh
-!/payd-data/create_load_register_wallet.sh
+!/payd-data/load_wallet.sh
 .DS_Store
