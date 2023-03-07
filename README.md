@@ -5,8 +5,7 @@ This is an example of how you could run [PayD](https://github.com/electrumsv/ele
 ```bash
 git clone https://github.com/electrumsv/liteclient-docker.git
 cd liteclient-docker
-docker-compose up -d
-docker exec electrumsv /bin/sh /root/.electrum-sv/load_wallet.sh
+docker-compose up
 ```
 
 ## Usage

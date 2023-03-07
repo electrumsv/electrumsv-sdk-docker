@@ -4,7 +4,7 @@ mkdir "/root/.electrum-sv/$d"
 ./electrum-sv daemon -v=debug --enable-node-wallet-api -rpcpassword= -walletnotify="python3 contrib/scripts/jsonrpc_wallet_event.py %s" > "/root/.electrum-sv/$d/daemon_log.txt" 2>&1 &
 
 echo "checking if we need to create a new wallet..."
-file="/root/.electrum-sv/wallets/demo"
+file="/root/.electrum-sv/wallets/demo.sqlite"
 new_wallet=false
 if ! [ -e "$file" ]
 then
@@ -38,3 +38,4 @@ fi
 printf "wallet is ready to use via json-rpc, link to documentation:
 https://electrumsv.readthedocs.io/en/develop/building-on-electrumsv/node-wallet-api.html#api-usage
 "
+sleep infinity
