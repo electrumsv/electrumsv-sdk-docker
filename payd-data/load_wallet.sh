@@ -1,7 +1,7 @@
 echo "starting daemon..."
 d="$(date +%s)"
 mkdir "/root/.electrum-sv/$d"
-./electrum-sv daemon -v=debug --enable-node-wallet-api -rpcpassword= --restapi-password= -walletnotify="python3 contrib/scripts/jsonrpc_wallet_event.py %s" > "/root/.electrum-sv/$d/daemon_log.txt" 2>&1 &
+./electrum-sv daemon -v=debug --enable-node-wallet-api -rpcpassword= --restapi-user=user --restapi-password= -walletnotify="python3 contrib/scripts/jsonrpc_wallet_event.py %s" > "/root/.electrum-sv/$d/daemon_log.txt" 2>&1 &
 # We must wait until the daemon has had a chance to startup and write to the lockfile
 status_code=404  # too early
 status_code=$(curl -s -o /dev/null -w "%{http_code}" --request POST --url http://127.0.0.1:9999/v1/rpc/ping --header 'Content-Type: text/plain')
