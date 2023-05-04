@@ -53,7 +53,7 @@ done
 if [ "$new_wallet" = true ]
 then
   echo "service signup..."
-  ./electrum-sv daemon -v=debug service_signup -w "$WALLET_NAME" --walletpassword="$WALLET_PASSWORD" > "/root/.electrum-sv/$d/signup_log.txt" 2>&1
+  ./electrum-sv daemon -v=debug service_signup -w "$WALLET_NAME" --walletpassword="$WALLET_PASSWORD" --restapi-user="$REST_API_USERNAME" --restapi-password="$REST_API_PASSWORD" > "/root/.electrum-sv/$d/signup_log.txt" 2>&1
 fi
 printf "wallet is ready to use via json-rpc, link to documentation:
 https://electrumsv.readthedocs.io/en/develop/building-on-electrumsv/node-wallet-api.html#api-usage
