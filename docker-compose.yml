@@ -10,10 +10,15 @@ services:
       - "9999:9999"
       - "8332:8332"  # node-api server (to replace bitcoind JSON-RPC)
     environment:
-      NODEAPI_HOST: 0.0.0.0
-      NODEAPI_PORT: 8332
-      RESTAPI_HOST: 0.0.0.0
-      WALLET_PASSWORD: "pass"
+      - NODEAPI_HOST=${NODEAPI_HOST}
+      - NODEAPI_PORT=${NODEAPI_PORT}
+      - WALLET_NAME=${WALLET_NAME}
+      - WALLET_PASSWORD=${WALLET_PASSWORD}
+      - RESTAPI_HOST=${RESTAPI_HOST}
+      - REST_API_USERNAME=${REST_API_USERNAME}
+      - REST_API_PASSWORD=${REST_API_PASSWORD}
+      - RPC_USERNAME=${RPC_USERNAME}
+      - RPC_PASSWORD=${RPC_PASSWORD}
     volumes:
       - ./payd-data:/root/.electrum-sv
     entrypoint: "/bin/sh /root/.electrum-sv/load_wallet.sh"
