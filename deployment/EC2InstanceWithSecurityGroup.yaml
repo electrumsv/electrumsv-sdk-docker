@@ -20,6 +20,35 @@ Parameters:
     Description: VPC to deploy instance into
     Type: AWS::EC2::VPC::Id
     ConstraintDescription: must be the name of an existing VPC.
+  PayDRPCUsername:
+    Type: String
+    Description: This is the username used for basic auth in the wallet node RPC API
+    Default: rpcuser
+  PayDRPCPassword:
+    Type: String
+    Description: This is the password used for basic auth in the wallet node RPC API (stored securely in the Parameter Store)
+    NoEcho : true
+    AllowedPattern : ^[a-zA-Z0-9]*$
+  PayDRESTAPIUsername:
+    Type: String
+    Description: This is the username used for basic auth in the wallet REST API
+    Default: restapiuser
+  PayDRESTAPIPassword:
+    Type: String
+    Description: This is the username used for basic auth in the wallet REST API (stored securely in the Parameter Store)
+    NoEcho : true
+    AllowedPattern : ^[a-zA-Z0-9]*$
+  PayDWalletName:
+    Type: String
+    Description: This is the name of the wallet that will be created. (and determines the name of the sqlite database)
+    Default: demo
+  PayDWalletPassword:
+    Type: String
+    Description: This is the wallet password that is used to encrypt the sensitive data in the sqlite database. 
+      Not all data is encrypted, only data that needs to be encrypted such as private keys. This credential is stored 
+      securely in the Parameter Store.
+    NoEcho : true
+    AllowedPattern : ^[a-zA-Z0-9]*$
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
@@ -102,19 +131,27 @@ Resources:
       Tags:
         - Value: electrumSV
           Key: Name
-      UserData: !Base64 |
-        #!bin/bash
-        sudo yum update
-        sudo amazon-linux-extras install docker
-        sudo service docker start
-        sudo usermod -a -G docker ec2-user
-        sudo chkconfig docker on
-        sudo yum install -y git
-        sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-        git clone https://github.com/electrumsv/liteclient-docker.git
-        cd liteclient-docker
-        docker-compose up -d
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          export WALLET_NAME="${PayDWalletName}"
+          export WALLET_PASSWORD="${PayDWalletPassword}"
+          export REST_API_USERNAME="${PayDRESTAPIUsername}"
+          export REST_API_PASSWORD="${PayDRESTAPIPassword}"
+          export RPC_USERNAME="${PayDRPCUsername}"
+          export RPC_PASSWORD="${PayDRPCPassword}"
+
+          sudo yum update
+          sudo amazon-linux-extras install docker
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          sudo chkconfig docker on
+          sudo yum install -y git
+          sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          git clone https://github.com/electrumsv/liteclient-docker.git
+          cd liteclient-docker
+          docker-compose up -d
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
