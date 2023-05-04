@@ -58,3 +58,22 @@ fi
 printf "wallet is ready to use via json-rpc, link to documentation:
 https://electrumsv.readthedocs.io/en/develop/building-on-electrumsv/node-wallet-api.html#api-usage
 "
+
+# Print logging output to console so the user doesn't have to go hunting for files
+dir="/root/.electrum-sv/$d"
+for filepath in "$dir"/*.txt; do
+  filename=$(basename "$filepath")
+  if [ -e "$filepath" ]; then
+    if [ "$filename" = "daemon_log.txt" ]; then
+      continue
+    else
+      echo
+      echo "BASH SCRIPT LOGGING (see: $filepath):"
+      cat "$filepath"
+    fi
+  fi
+done
+
+echo
+echo "ELECTRUMSV DAEMON LOGGING:"
+tail -f -n 10000 "$dir/daemon_log.txt"
